@@ -7,6 +7,9 @@
 // Each overflow of timer1 creates an interrupt and is counted,
 // and - together with the last timer1 value - is used
 // to calculate the total number of OCXO pulses.
+
+// uC: Atmega328P / Arduino Uno R3
+// External hardware: 74HC390 or 74HCT390 (counter) 
 //
 // Christoph Schwaerzler, OE1CGS
 // Nov. 2023
@@ -39,30 +42,30 @@ void setup()
   pinMode(LEDPin, OUTPUT);
 
   //Set up Timer1 as a frequency counter - input at pin D9
-  TCCR1B = 0;                  //No clock source (Timer/Counter stopped)
-  TCCR1A = 0;                  //Normal port operation, OC1A/OC1B disconnected, Normal mode (counter)
-  TCNT1  = 0;                  //Set counter value to zero
-  TIFR1  = 1;                  //Reset overflow
-  TIMSK1 = 1;                  //Turn on overflow flag
+  TCCR1B = 0;                        //No clock source (Timer/Counter stopped)
+  TCCR1A = 0;                        //Normal port operation, OC1A/OC1B disconnected, Normal mode (counter)
+  TCNT1  = 0;                        //Set counter value to zero
+  TIFR1  = 1;                        //Reset overflow
+  TIMSK1 = 1;                        //Turn on overflow flag
 
   // Set Arduino D2 for external interrupt input on the rising edge of GPS 1PPS
   attachInterrupt(0, PPSinterrupt, RISING);  
   
   // Initialize serial port and print headers on the serial port
-  Serial.begin(9600);          // Initialize serial port
-  while(!Serial){;}            // Wait for serial port to connect
+  Serial.begin(9600);                // Initialize serial port
+  while(!Serial){;}                  // Wait for serial port to connect
   Serial.print("#");
-  Serial.print("\t");          // Move next output one tabulator to the right
+  Serial.print("\t");                // Move next output one tabulator to the right
   Serial.print("Counts");
-  Serial.print("\t\t");        // Move next output two tabulators to the right
+  Serial.print("\t\t");              // Move next output two tabulators to the right
   Serial.println("Frequency");
 }
 
 // Timer1 overflow interrupt vector increments the counter
 ISR(TIMER1_OVF_vect) 
 {
-  count++;                     //Increment the overflows counter
-  TIFR1 = (1<<TOV1);           //Clear overflow flag by shifting left 
+  count++;                           //Increment the overflows counter
+  TIFR1 = (1<<TOV1);                 //Clear overflow flag by shifting left 
 }
 
 
@@ -73,34 +76,29 @@ void PPSinterrupt()
 {
   if (ppscount == tpause)
   {
-    TCNT1  = 0;              // Set counter to zero
-    TCCR1B = 7;              // Enable Timer1 to count on leading edge of T1 (Pin D9)
+    TCNT1  = 0;                      // Set counter to zero
+    TCCR1B = 7;                      // Enable Timer1 to count on leading edge of T1 (Pin D9)
   }
   if (ppscount == tpause + tmeasure)
   {
-    TCCR1B    = 0;           // Stops counting
-    low_count = TCNT1;       // Stores last value of counter in Timer1
-    ppscount  = 0;           // Reset the pps counter for the next measurement
-    nmeasure++;              // Increase the number of measurements
+    TCCR1B    = 0;                   // Stops counting
+    low_count = TCNT1;               // Stores last value of counter in Timer1
+    ppscount  = 0;                   // Reset the pps counter for the next measurement
+    nmeasure++;                      // Increase the number of measurements
     count = (count << 16) + low_count;
     frequency = count / tmeasure;
     // Print current and average data
-    Serial.print(nmeasure);           // Print the number of the current measurement
-    Serial.print("\t");               // Move next printed number one tabulator to the right
-    Serial.print(count);              // Print the total number of cycles measured during the last measurement time 'tmeasure'
-    Serial.print("\t\t");             // Move next printed number two tabulators to the right
-    Serial.println(frequency);   // Print the frequency measured during the last measurement
+    Serial.print(nmeasure);          // Print the number of the current measurement
+    Serial.print("\t");              // Move next printed number one tabulator to the right
+    Serial.print(count);             // Print the total number of cycles measured during the last measurement time 'tmeasure'
+    Serial.print("\t\t");            // Move next printed number two tabulators to the right
+    Serial.println(frequency);       // Print the frequency measured during the last measurement
     count = 0;
   }
   ppscount++;                                            // Increment the pps counter
   digitalWrite(LEDPin, !digitalRead(LEDPin));            // LED blinks with pps signal
-//  low_count = TCNT1;
-//  delta_count = (int64_t)low_count  - (int64_t)prev_low_count + (high_count - prev_high_count) * 0x10000LL;
-//  prev_high_count = high_count;
-//  prev_low_count = low_count;
   loop();
 }
-
 
 void loop()
 { 
