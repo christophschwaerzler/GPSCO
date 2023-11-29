@@ -12,7 +12,7 @@ Afterwards the OCXO is used on a stand-alone basis again, until it might be reca
 This is the concept behind the project here.
 
 I built the hardware around an Arduino UNO R3 board, since this is a cheap and popular uC system which offers most of
-the hardware which is needed. Many builders will already have such a board lying around. There is only one problem:
+the hardware needed. Many builders will already have such a board lying around. There is only one problem:
 The internal counter on timer1 allows for a maximal counting rate of f/2.5, where f is the clock frequency i.e. 16 MHz.
 This is 6.4 MHz and is not sufficient for a 10 MHz OCXO, such as mine. Accordingly one more piece of hardware is needed
 to divide bring the counts into the allowed range: A 74HC390 (or 74HCT390), which is a divider and with some change in
