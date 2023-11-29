@@ -11,5 +11,14 @@ They come preadjusted, but one can still improve the precision by calibrating th
 Afterwards the OCXO is used on a stand-alone basis again, until it might be recalibrated some time later.
 This is the concept behind the project here.
 
+I built the hardware around an Arduino UNO R3 board, since this is a cheap and popular uC system which offers most of
+the hardware which is needed. Many builders will already have such a board lying around. There is only one problem:
+The internal counter on timer1 allows for a maximal counting rate of f/2.5, where f is the clock frequency i.e. 16 MHz.
+This is 6.4 MHz and is not sufficient for a 10 MHz OCXO, such as mine. Accordingly one more piece of hardware is needed
+to divide bring the counts into the allowed range: A 74HC390 (or 74HCT390), which is a divider and with some change in
+wiring allows for divisions by 2, 5 or 10.
+
 I put the OCXO in a 3D-printed protective enclosure, which also increases thermal stability through wind protection:
-![OCXO_in_enclosure](https://github.com/christophschwaerzler/GPSCO/assets/151140591/6283457b-cee2-4abd-9f1b-937ddc1d2cfb)
+
+![OCXO_in_enclosure](https://github.com/christophschwaerzler/GPSCO/assets/151140591/3119a258-fadd-4b6d-b466-042e5a79baed)
+
