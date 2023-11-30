@@ -18,7 +18,17 @@ This is 6.4 MHz and is not sufficient for a 10 MHz OCXO, such as mine. According
 to divide bring the counts into the allowed range: A 74HC390 (or 74HCT390), which is a divider and with some change in
 wiring allows for divisions by 2, 5 or 10.
 
-I put the OCXO in a 3D-printed protective enclosure, which also increases thermal stability through wind protection:
+The hardware setup can be put together on a breadboard in just a few minutes. Mine looks like this:
+![GPSCO_setup](https://github.com/christophschwaerzler/GPSCO/assets/151140591/38020d42-44e5-461f-b481-1b859744947c)
 
-![OCXO_in_enclosure](https://github.com/christophschwaerzler/GPSCO/assets/151140591/3119a258-fadd-4b6d-b466-042e5a79baed)
+Top left is the OCXO in a protective enclosure, which also increases thermal stability through wind protection.
+To the left of the Arduino board is a breadboard with the 74HC390 and under the Arduino another breadboard just
+for interfacing the connector to the GPS. You need a GPS with the 1 pps signal directly available, you do not
+need the NMEA data from the GPS for this simple setup. Just ensure that the pps is solid, for example by checking
+that the onboard LED of the Arduino goes on and off rythmically in 1 second intervals.
 
+The system is quite sensible to HF-interference from the 10 MHz to the 1 pps, so take care to seperate the lines as
+far as possible. Most probably you will also need some choking on the lines (especially the 1 pps line) with ferrites
+like I had to:
+
+![GPSCO_ferrites](https://github.com/christophschwaerzler/GPSCO/assets/151140591/d6658d51-1d59-4ee9-bc1d-f81a0125335e)
