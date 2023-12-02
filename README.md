@@ -19,7 +19,9 @@ to divide bring the counts into the allowed range: A 74HC390 (or 74HCT390), whic
 wiring allows for divisions by 2, 5 or 10.
 
 This is the full schematics, just note that only one of the four possible divider values will be connected to the microcontroller:
-@@@
+
+![Schematics_full](https://github.com/christophschwaerzler/GPSCO/assets/151140591/2730d952-068c-4b6d-8458-8d298501ea78)
+
 The divider should be chosen such that the input to the Arduino is the highest frequency below 6.4 MHz. For a
 10 MHz OCXO this is the 2:1 divider setting, leading to an input to the Arduino timer of about 5 MHz.
 
@@ -38,11 +40,12 @@ like I had to:
 
 ![GPSCO_ferrites](https://github.com/christophschwaerzler/GPSCO/assets/151140591/d6658d51-1d59-4ee9-bc1d-f81a0125335e)
 
-#Code inherent delay
+# Code inherent delay
+
 Ever since I came across such a timer/software implementation for latching the OCXO for the first time, I had a feeling
 that there is a (very small) delay in stopping the timer. The respective sequence of the code
 
-@@@
+![Code](https://github.com/christophschwaerzler/GPSCO/assets/151140591/058534f5-c5ef-49ca-9110-84dd6a31d0d9)
 
 typically checks whether the timer is started first and afterwards whether the timer is stopped. This means, that the stopping of
 the timer is slightly delayed versus the starting (plus an integer number of seconds). With the above setup I could
