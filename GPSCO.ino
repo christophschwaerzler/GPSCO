@@ -22,7 +22,11 @@
 
 // Parameters
 #define tpause                     1 // [>=1] Integer number of pps-signals (i.e. seconds) between measurements (and prior to first measurement)
+<<<<<<< HEAD
 #define tmeasure                   1 // [>=1] Integer number of pps-signals (i.e. seconds) of one measurement
+=======
+#define tmeasure                 200 // [>=1] Integer number of pps-signals (i.e. seconds) of one measurement
+>>>>>>> 3156fc92643240e685c72168a013bca91d391dca
 #define ppsPin                     2 // Pin D2 (INT0) for 1pps signal from GPS 
 #define OCXOPin                    5 // Pin D5 (T1)  for 10 MHz OCXO (TTL)
 #define LEDPin                    13 // Pin D13 for (built in) LED, alternating with 1 pps signal
