@@ -57,12 +57,20 @@ that there is a (very small) delay in stopping the timer. The respective sequenc
 
 ![Code](https://github.com/christophschwaerzler/GPSCO/assets/151140591/058534f5-c5ef-49ca-9110-84dd6a31d0d9)
 
-typically checks whether the timer is started first and afterwards whether the timer is stopped. This means, that the stopping of
-the timer is slightly delayed versus the starting (plus an integer number of seconds). With the above setup I could
-not only proove my feeling, but also quantify the effect. This allows for correcting the results, leading to a significantly
+typically checks whether the timer is started first and afterwards whether the timer is stopped. This means, that stopping 
+the timer is slightly delayed versus starting (plus an integer number of seconds). With the above setup I could
+not only produce proove, but also quantify this effect. This allows for numerically correcting the results, leading to a significantly
 improved precision for shorter measurement times.
 
+The following graph gives measured frequencies for a variety of measurement times. The blue dots represent the raw data without adjustment
+and the red dots give the calculated values after applying the adjustments. Whereas there is not a big difference between the two values
+for measuremt times of about 20 seconds and longer, it is very obvious that for shorter measurement times the adjustment significantly
+improves the precision.
+
 [1] http://www.arrl.org/files/file/QEX_Next_Issue/2015/Jul-Aug_2015/Marcus.pdf
+
 [2] http://roland.cordesses.free.fr/GPS_Si2cor.html
+
 [3] https://github.com/erikkaashoek/Arduino_SI5351_GPSDO
+
 [4] https://www.eevblog.com/forum/projects/cheap-chinese-ocxo-frequency-reference-modules/
