@@ -9,22 +9,16 @@
 // to calculate the total number of OCXO pulses.
 
 // uC: Atmega328P / Arduino Uno R3
-// External hardware: 74HC390 or 74HCT390 (counter) 
+// External hardware: 74HC390 or 74HCT390 (counter/divider) 
 //
 // Christoph Schwaerzler, OE1CGS
-// V1.2 04.12.2023
-
-#include <string.h>
-#include <ctype.h>
-#include <avr/interrupt.h>  
-#include <avr/io.h>
-
+// V1.3 05.12.2023
 
 // Parameters
 #define tpause                     1 // [>=1] Integer number of pps-signals (i.e. seconds) between measurements (and prior to first measurement)
-#define tmeasure                   1 // [>=1] Integer number of pps-signals (i.e. seconds) of one measurement
+#define tmeasure                   1 // [>=1] Integer number of pps-signals (i.e. seconds) for an individual measurement
 #define ppsPin                     2 // Pin D2 (INT0) for 1pps signal from GPS 
-#define OCXOPin                    5 // Pin D5 (T1)  for 10 MHz OCXO (TTL)
+#define OCXOPin                    5 // Pin D5 (T1)  for OCXO (TTL-out) or divider output
 #define LEDPin                    13 // Pin D13 for (built in) LED, alternating with 1 pps signal
 
 
@@ -70,31 +64,31 @@ ISR(TIMER1_OVF_vect)
 }
 
 
-// Interrupt routine for counting the 10 MHx OCXO signal
+// Interrupt routine for counting the OCXO signal
 // Called every second by GPS 1PPS on Arduino Uno D2
 
 void PPSinterrupt()
 {
   if (ppscount == tpause)
   {
-    TCNT1  = 0;                      // Set counter to zero
-    TCCR1B = 7;                      // Enable Timer1 to count on leading edge of T1 (Pin D5)
+    TCNT1  = 0;                                   // Set counter to zero
+    TCCR1B = 7;                                   // Enable timer1 to count on leading edge of T1 (Pin D5)
   }
   if (ppscount == tpause + tmeasure)
   {
-    TCCR1B    = 0;                   // Stops counting
-    low_count = TCNT1;               // Stores last value of counter in Timer1
-    ppscount  = 0;                   // Reset the pps counter for the next measurement
-    nmeasure++;                      // Increase the number of measurements
+    TCCR1B    = 0;                                // Stops counting
+    low_count = TCNT1;                            // Stores last value of counter in Timer1
+    ppscount  = 0;                                // Reset the pps counter for the next measurement
+    nmeasure++;                                   // Increase the number of measurements
     count = (count << 16) + low_count;
     // Print current and average data
-    Serial.print(nmeasure);          // Print the number of the current measurement
+    Serial.print(nmeasure);                       // Print the number of the current measurement
     Serial.print("\t\t");
-    Serial.println(count);             // Print the total number of cycles measured during the last measurement time 'tmeasure'
+    Serial.println(count);                        // Print the total number of cycles measured during the last measurement time 'tmeasure'
     count = 0;
   }
-  ppscount++;                                            // Increment the pps counter
-  digitalWrite(LEDPin, !digitalRead(LEDPin));            // LED blinks with pps signal
+  ppscount++;                                     // Increment the pps counter
+  digitalWrite(LEDPin, !digitalRead(LEDPin));     // LED alternates with pps signal
   loop();
 }
 
