@@ -25,7 +25,7 @@ wiring allows for divisions by 2, 5 or 10.
 
 This is the full schematics, note that only one of the four possible divider values will be connected to the microcontroller:
 
-![Schematics_full](https://github.com/christophschwaerzler/GPSCO/assets/151140591/2730d952-068c-4b6d-8458-8d298501ea78)
+![OCXO_schematics_full](https://github.com/christophschwaerzler/GPSCO/assets/151140591/23832137-ae0a-4a30-8c26-318da26e637a)
 
 The divider should be chosen such that the input to the Arduino is the highest frequency below 6.4 MHz. For a
 10 MHz OCXO this is the 2:1 divider setting, leading to an input to the Arduino timer of about 5 MHz.
