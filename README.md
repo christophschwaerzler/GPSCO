@@ -39,15 +39,37 @@ for interfacing the connector to the GPS. You need a GPS with the 1 pps signal d
 need the NMEA data from the GPS for this simple setup. Just ensure that the pps is solid, for example by checking
 that the onboard LED of the Arduino goes on and off rythmically in 1 second intervals.
 
-The system is quite sensible to HF-interference from the 10 MHz to the 1 pps, so take care to seperate the lines as
+The system is quite sensible to HF-interference from the input frequency to the 1 pps, so take care to seperate the lines as
 far as possible. Most probably you will also need some choking on the lines (especially the 1 pps line) with ferrites
 like I had to:
 
 ![GPSCO_ferrites](https://github.com/christophschwaerzler/GPSCO/assets/151140591/d6658d51-1d59-4ee9-bc1d-f81a0125335e)
 
+Despite these precautions, I still encountered about 2% of the 1 second counts to be corrupt. These cases can easily be 
+identified and sorted out. For longer measurement series I wrote some code to detect and treat these outliers 
+automatically (see "Allan deviation" below). Most probably these errors can be reduced by additional shielding and
+ultimately moving from a breadboard setup to a bespoke and carefully designed PCB.
+
+Take into account, that the OCXO will need some time to warm up und stabilize. Give it a headstart of about 20 minutes or more.
+After powering up the microcontroller, one has to wait for a stable 1 pps signal. This can be identified by the onboard
+LED alternating with a 1 second rhythm. The system will print out data with 9600 baud on the serial bus. This can be
+read and shown either by the Arduino IDE or a terminal program. I use PuTTY for this purpose and have the program
+produce a logfile with the data for later processing. Each line consist of the running measurement number followed by
+the exact number of counted OCXO (or divider output) pulses during the measurement time. This number has to be adjusted
+for the divider factor and the measurement time (and probably the delay effect, see below), which I do afterwards using
+a spreadsheet.
+
+Since the code uses unsigned long integers, the maximum number of counts (= 'input_frequency * measurement time') must
+not exceed 4,294,967,295. For a 10 MHz OCXO with a divider by 2 this implies a maximum measurement time of about
+859 seconds (otherwise the overflow has to be taken care of by hand).
+
+With this setup, the OCXO can easily be adjusted to 0.1 Hz (1E-8) and I am very confident that 0.01 Hz (1E-9) is
+achievable as well. Not bad, for hardware costing less than 20 €! Just use measurement times in excess of 20 seconds
+and/or adjust for shorter times according to the formula below ("Code inherent delay").
+ 
 Early on, it became obvious that the range of the trimmer in my OCXO kit was not sufficient to bring the frequency down
 to the target frequency. The lowest I could get to was 10,000,002.4 Hz. A quick search on the WWW revealed that this is
-a known issue [4] with kits from this vendor. This problem can be solved easily by changeing a resistor. I decided to replace
+a known issue [4] with kits from this vendor. This problem can be solved easily by changing a resistor. I decided to replace
 R2 (resistor marking: 68B) with a 10k resistor, which braught 10,000,000.0 right in the middle of the trimmer range.
 
 # Code inherent delay
@@ -66,6 +88,10 @@ The following graph gives measured frequencies for a variety of measurement time
 and the red dots give the calculated values after applying the adjustments. Whereas there is not a big difference between the two values
 for measuremt times of about 20 seconds and longer, it is very obvious that for shorter measurement times the adjustment significantly
 improves the precision.
+
+# Allan deviation
+
+With this setup in place, I could not resist and challenge myself to some rudimentary Allan deviation measurements. @@@
 
 [1] http://www.arrl.org/files/file/QEX_Next_Issue/2015/Jul-Aug_2015/Marcus.pdf
 
