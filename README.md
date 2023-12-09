@@ -105,9 +105,17 @@ significantly improves the results.
 # Allan deviation
 
 With this setup in place, I could not resist and challenge myself to some rudimentary Allan deviation measurements. The following
-findings may not all be scientfically 100% correct, but it was my approach to get my feet wet with a new concept.
+findings may not all be scientifically 100% correct, but it was my approach to get my feet wet with a new concept.
 
 In a first step, I had to get rid of the small number of corrupt data (see above), while maintaining the timeline of the data.
+To do this in an efficient way, I wrote some code for the open statistics package "R". This code, called "Datacleaning.R" is
+available in the "Allen deviation" folder. There are two modes, to be selected within the code. One replaces outlier data by
+randomly picked inlier data and the other one deletes the outlier data. For further treatment with the aim of calculating
+Allan deviation, one has to choose "replace".
+
+![Allan_Plot](https://github.com/christophschwaerzler/GPSCO/assets/151140591/69e55622-4e56-4dcd-a69e-fd1c56f6615d)
+
+
 
 [1] http://www.arrl.org/files/file/QEX_Next_Issue/2015/Jul-Aug_2015/Marcus.pdf
 
