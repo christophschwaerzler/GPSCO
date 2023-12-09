@@ -36,7 +36,7 @@ The hardware setup can be put together on a breadboard in just a few minutes. Mi
 Top left is the OCXO in a protective enclosure, which also increases thermal stability through wind protection.
 To the left of the Arduino board is a breadboard with the 74HC390 and under the Arduino another breadboard just
 for interfacing the connector to the GPS. You need a GPS with the 1 pps signal directly available, you do not
-need the NMEA data from the GPS for this simple setup. In my setup, I used a QLG1 GPS from GPS-Labs [4].
+need the NMEA data from the GPS for this simple setup. In my setup, I used a QLG1 GPS from QRP-Labs [4].
 Just ensure that the pps is solid, for example by checking that the onboard LED of the Arduino goes on and off
 rythmically in 1 second intervals.
 
