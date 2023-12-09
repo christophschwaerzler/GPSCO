@@ -36,8 +36,9 @@ The hardware setup can be put together on a breadboard in just a few minutes. Mi
 Top left is the OCXO in a protective enclosure, which also increases thermal stability through wind protection.
 To the left of the Arduino board is a breadboard with the 74HC390 and under the Arduino another breadboard just
 for interfacing the connector to the GPS. You need a GPS with the 1 pps signal directly available, you do not
-need the NMEA data from the GPS for this simple setup. Just ensure that the pps is solid, for example by checking
-that the onboard LED of the Arduino goes on and off rythmically in 1 second intervals.
+need the NMEA data from the GPS for this simple setup. In my setup, I used a QLG1 GPS from GPS-Labs [4].
+Just ensure that the pps is solid, for example by checking that the onboard LED of the Arduino goes on and off
+rythmically in 1 second intervals.
 
 The system is quite sensible to HF-interference from the input frequency to the 1 pps, so take care to seperate the lines as
 far as possible. Most probably you will also need some choking on the lines (especially the 1 pps line) with ferrites
@@ -123,4 +124,6 @@ Allan deviation, one has to choose "replace".
 
 [3] https://github.com/erikkaashoek/Arduino_SI5351_GPSDO
 
-[4] https://www.eevblog.com/forum/projects/cheap-chinese-ocxo-frequency-reference-modules/
+[4] https://www.qrp-labs.com/qlg1.html
+
+[5] https://www.eevblog.com/forum/projects/cheap-chinese-ocxo-frequency-reference-modules/
