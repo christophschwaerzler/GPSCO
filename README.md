@@ -28,7 +28,7 @@ This is the full schematics, note that only one of the four possible divider val
 ![OCXO_schematics_full](https://github.com/christophschwaerzler/GPSCO/assets/151140591/23832137-ae0a-4a30-8c26-318da26e637a)
 
 The divider should be chosen such that the input to the Arduino is the highest frequency below 6.4 MHz. For a
-10 MHz OCXO this is the 2:1 divider setting, leading to an input to the Arduino timer of about 5 MHz.
+10 MHz OCXO this is the 2:1 divider setting, leading to an input to the Arduino timer of 5 MHz.
 
 The hardware setup can be put together on a breadboard in just a few minutes. Mine looks like this:
 ![GPSCO_setup](https://github.com/christophschwaerzler/GPSCO/assets/151140591/38020d42-44e5-461f-b481-1b859744947c)
@@ -70,28 +70,44 @@ and/or adjust for shorter times according to the formula below ("Code inherent d
 Early on, it became obvious that the range of the trimmer in my OCXO kit was not sufficient to bring the frequency down
 to the target frequency. The lowest I could get to was 10,000,002.4 Hz. A quick search on the WWW revealed that this is
 a known issue [4] with kits from this vendor. This problem can be solved easily by changing a resistor. I decided to replace
-R2 (resistor marking: 68B) with a 10k resistor, which braught 10,000,000.0 right in the middle of the trimmer range.
+R2 (resistor marking: 68B) with a 10k resistor, which resulted in 10,000,000.0 being right in the middle of the trimmer range.
 
 # Code inherent delay
 
 Ever since I came across such a timer/software implementation for latching the OCXO for the first time, I had a feeling
 that there is a (very small) delay in stopping the timer. The respective sequence of the code
 
-![Code](https://github.com/christophschwaerzler/GPSCO/assets/151140591/058534f5-c5ef-49ca-9110-84dd6a31d0d9)
+![Code](https://github.com/christophschwaerzler/GPSCO/assets/151140591/87d551d4-96dc-450d-941f-ee95067e6c10)
 
 typically checks whether the timer is started first and afterwards whether the timer is stopped. This means, that stopping 
 the timer is slightly delayed versus starting (plus an integer number of seconds). With the above setup I could
 not only produce proove, but also quantify this effect. This allows for numerically correcting the results, leading to a significantly
 improved precision for shorter measurement times.
 
-The following graph gives measured frequencies for a variety of measurement times. The blue dots represent the raw data without adjustment
-and the red dots give the calculated values after applying the adjustments. Whereas there is not a big difference between the two values
-for measuremt times of about 20 seconds and longer, it is very obvious that for shorter measurement times the adjustment significantly
-improves the precision.
+Empirically I found that the following adjustment to the measured frequency results in the best corrected frequency:
+
+![Adjustment formula](https://github.com/christophschwaerzler/GPSCO/assets/151140591/1026108e-9dd3-4af0-98c4-6f16276ef480)
+
+In these equations f is the corrected frequency. It is calculated by subtracting a value fadj from the measured
+frequency fmeas. The adjustment itself is a constant (2.71E-7), devided by the gate time (Tmeas) and multiplied with the measured
+frequency. It is obvious that the adjustment gets smaller with increasing measurement time, which is to be expected in this case.
+
+The constant factor corresponds to slightly more than 4 ticks of the 16 MHz clock driving the Arduino. Maybe some machine code
+savvy expert on the ATmega can compare that to the time delay associated with the code?
+
+The following graph gives measured and adjusted frequencies for a variety of measurement times. The blue dots represent the raw data without 
+adjustment and the green dots give the calculated values after applying the adjustments. Whereas there is not a big difference between the 
+two values for measuremt times of about 50 seconds and longer, it is very obvious that for shorter measurement times the adjustment 
+significantly improves the results.
+
+![Adjusted frequency](https://github.com/christophschwaerzler/GPSCO/assets/151140591/25fbdfb6-aa32-4daf-bea6-775d403ad26d)
 
 # Allan deviation
 
-With this setup in place, I could not resist and challenge myself to some rudimentary Allan deviation measurements. @@@
+With this setup in place, I could not resist and challenge myself to some rudimentary Allan deviation measurements. The following
+findings may not all be scientfically 100% correct, but it was my approach to get my feet wet with a new concept.
+
+In a first step, I had to get rid of the small number of corrupt data (see above), while maintaining the timeline of the data.
 
 [1] http://www.arrl.org/files/file/QEX_Next_Issue/2015/Jul-Aug_2015/Marcus.pdf
 
