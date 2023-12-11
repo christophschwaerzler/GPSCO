@@ -110,13 +110,38 @@ findings may not all be scientifically 100% correct, but it was my approach to g
 
 In a first step, I had to get rid of the small number of corrupt data (see above), while maintaining the timeline of the data.
 To do this in an efficient way, I wrote some code for the open statistics package "R". This code, called "Datacleaning.R" is
-available in the "Allen deviation" folder. There are two modes, to be selected within the code. One replaces outlier data by
+available in the "Allan deviation" folder. There are two modes, to be selected within the code. One replaces outlier data by
 randomly picked inlier data and the other one deletes the outlier data. For further treatment with the aim of calculating
 Allan deviation, one has to choose "replace".
 
+The second step is running the code "Allan deviation" (also in the "Allan deviation" folder). Inside the code, two parameters
+have to be set: "tau0" is the time between measurements in seconds prevalent in the initial data, and "minsample" the minimum
+number of data points for extracted data. For my shortest measurement times which were 1 second, followed by a 1 second pause,
+tau0 is 2 seconds. If the measurement time is e.g. 20 seconds and the pause 1 second, tau0 is 21. The minsample is a
+parameter due to the way the sigmas are calculated for longer taus. For example, the value for a tau of 4 seconds is
+efficiently derived from the same initial 2 seconds data, by skipping every second data point. Unfortunately this leaves
+one with only half the number of points and accordingly a less signifacant statistic measure for sigma. This problem can be
+reduced to a certain extent as there are two time series of 4 second data: 1,3,5,7,.... and 2,4,6,8,... The best estimate
+for sigma(tau=4) is then the avereage of those two sigmas. Following this scheme, a tau of 8 can be calculated by again
+skipping every other data point of the tau 4 data series and so on. It is clear, that after so many iterations of this
+process the resulting time series are comprised of only a limited number of data points und even if there are several of
+these series, the calculated sigma looses statistic significance. The parameter "minsample" defines the minimum number of
+data points of a series before the program stops the process. The results are shown graphically and written in a Excel file
+called "Allan_results.xlsx".
+
+These codes enabled me to do some experimenting with my measured data. Very soon I found that my short term measurements
+did not provide very satisfying values for the Allan deviation (they were in the order of 1E-7) and only from about 20
+seconds of measuerement time onwards the results got better. Maybe the measurement precision for shorter times - even with the
+above adjustment - is still limited.
+
+Only then a pattern emerged which I consider significant. As the following graph shows, there is a dip in sigma around a
+measurement time of about 200 seconds.
+
 ![Allan_Plot](https://github.com/christophschwaerzler/GPSCO/assets/151140591/69e55622-4e56-4dcd-a69e-fd1c56f6615d)
 
-
+The associated sigma value there seems to be slightly better than 6E-9. This would imply that a measurement time of about
+200 seconds is preferrable in order to get best results. As this is a very practical time and also coincides with my
+gut feeling when doing the experiments, I will go for 200 seconds of measurement time in future recalibrations of the OCXO.
 
 [1] http://www.arrl.org/files/file/QEX_Next_Issue/2015/Jul-Aug_2015/Marcus.pdf
 
