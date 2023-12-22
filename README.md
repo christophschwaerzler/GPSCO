@@ -70,7 +70,7 @@ and/or adjust for shorter times according to the formula below ("Code inherent d
  
 Early on, it became obvious that the range of the trimmer in my OCXO kit was not sufficient to bring the frequency down
 to the target frequency. The lowest I could get to was 10,000,002.4 Hz. A quick search on the WWW revealed that this is
-a known issue [4] with kits from this vendor. This problem can be solved easily by changing a resistor. I decided to replace
+a known issue [5] with kits from this vendor. This problem can be solved easily by changing a resistor. I decided to replace
 R2 (resistor marking: 68B) with a 10k resistor, which resulted in 10,000,000.0 being right in the middle of the trimmer range.
 
 # Code inherent delay
